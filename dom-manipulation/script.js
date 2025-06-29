@@ -8,7 +8,6 @@ const quotes = [
 // DOM references
 const quoteDisplay = document.getElementById("quoteDisplay");
 const newQuoteBtn = document.getElementById("newQuote");
-const addQuoteBtn = document.getElementById("addQuoteBtn");
 const categoryFilter = document.getElementById("categoryFilter");
 
 // ✅ Function: Display a random quote using innerHTML
@@ -32,7 +31,7 @@ function displayRandomQuote() {
   `;
 }
 
-// ✅ Function: Alias for displayRandomQuote
+// ✅ Function: Wrapper for displayRandomQuote
 function showRandomQuote() {
   displayRandomQuote();
 }
@@ -73,10 +72,61 @@ function updateCategoryOptions(newCategory) {
   }
 }
 
-// Event listeners
-newQuoteBtn.addEventListener("click", showRandomQuote);
-addQuoteBtn.addEventListener("click", addQuote);
-categoryFilter.addEventListener("change", showRandomQuote);
+// ✅ Function: Dynamically create the Add Quote form
+function createAddQuoteForm() {
+  const formContainer = document.createElement("div");
 
-// Initial render
-showRandomQuote();
+  const quoteInput = document.createElement("input");
+  quoteInput.id = "newQuoteText";
+  quoteInput.type = "text";
+  quoteInput.placeholder = "Enter a new quote";
+
+  const categoryInput = document.createElement("input");
+  categoryInput.id = "newQuoteCategory";
+  categoryInput.type = "text";
+  categoryInput.placeholder = "Enter quote category";
+
+  const addButton = document.createElement("button");
+  addButton.textContent = "Add Quote";
+  addButton.addEventListener("click", addQuote);
+
+  formContainer.appendChild(quoteInput);
+  formContainer.appendChild(categoryInput);
+  formContainer.appendChild(addButton);
+
+  document.body.appendChild(formContainer);
+}
+
+// ✅ Function: Create category filter dropdown
+function createCategoryFilter() {
+  const label = document.createElement("label");
+  label.setAttribute("for", "categoryFilter");
+  label.textContent = "Filter by Category:";
+
+  const select = document.createElement("select");
+  select.id = "categoryFilter";
+
+  const defaultOption = document.createElement("option");
+  defaultOption.value = "all";
+  defaultOption.textContent = "All";
+  select.appendChild(defaultOption);
+
+  document.body.appendChild(label);
+  document.body.appendChild(select);
+
+  select.addEventListener("change", showRandomQuote);
+}
+
+// ✅ Initialize the app
+function init() {
+  createCategoryFilter();
+  createAddQuoteForm();
+  quotes.forEach(q => updateCategoryOptions(q.category));
+  showRandomQuote();
+}
+
+// Event listener for "Show New Quote" button
+newQuoteBtn.addEventListener("click", showRandomQuote);
+
+// Start the app
+init();
