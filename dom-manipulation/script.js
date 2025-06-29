@@ -236,6 +236,48 @@ async function syncQuotes() {
     notifyUser("Quotes synced successfully. No new server quotes.");
   }
 }
+// ✅ Full sync: fetch from server and post local unsynced quotes
+async function syncQuotes() {
+  const serverQuotes = await fetchQuotesFromServer();
+
+  const localTexts = new Set(quotes.map(q => q.text));
+  const newFromServer = [];
+
+  serverQuotes.forEach(serverQuote => {
+    if (!localTexts.has(serverQuote.text)) {
+      quotes.push(serverQuote);
+      newFromServer.push(serverQuote);
+    }
+  });
+
+  // Simulate posting all local quotes to server
+  for (const quote of quotes) {
+    await postQuoteToServer(quote);
+  }
+
+  // Save and update UI
+  if (newFromServer.length > 0) {
+    saveQuotes();
+    populateCategories();
+    filterQuotes();
+    notifyUser(`${newFromServer.length} new quote(s) synced from server.`);
+  }
+
+  // ✅ Always show this message after sync
+  notifyUser("Quotes synced with server!");
+}
+function notifyUser(message) {
+  const notice = document.createElement("div");
+  notice.textContent = message;
+  notice.style.background = "#e0f7fa";
+  notice.style.border = "1px solid #00796b";
+  notice.style.color = "#004d40";
+  notice.style.padding = "10px";
+  notice.style.marginTop = "10px";
+  notice.style.borderRadius = "4px";
+  document.body.insertBefore(notice, quoteDisplay);
+  setTimeout(() => notice.remove(), 4000);
+}
 
 
     if (newQuotes.length > 0) {
