@@ -11,6 +11,13 @@ const newQuoteBtn = document.getElementById("newQuote");
 const addQuoteBtn = document.getElementById("addQuoteBtn");
 const categoryFilter = document.getElementById("categoryFilter");
 
+// Helper: Clear all children of an element
+function clearElement(el) {
+  while (el.firstChild) {
+    el.removeChild(el.firstChild);
+  }
+}
+
 // Show a random quote
 function showRandomQuote() {
   const selectedCategory = categoryFilter.value;
@@ -18,14 +25,21 @@ function showRandomQuote() {
     ? quotes
     : quotes.filter(q => q.category.toLowerCase() === selectedCategory.toLowerCase());
 
+  clearElement(quoteDisplay);
+
   if (filteredQuotes.length === 0) {
-    quoteDisplay.textContent = "No quotes available for this category.";
+    const noQuoteMsg = document.createElement("p");
+    noQuoteMsg.textContent = "No quotes available for this category.";
+    quoteDisplay.appendChild(noQuoteMsg);
     return;
   }
 
   const randomIndex = Math.floor(Math.random() * filteredQuotes.length);
   const quote = filteredQuotes[randomIndex];
-  quoteDisplay.textContent = `"${quote.text}" — ${quote.category}`;
+
+  const quoteText = document.createElement("p");
+  quoteText.textContent = `"${quote.text}" — ${quote.category}`;
+  quoteDisplay.appendChild(quoteText);
 }
 
 // Add a new quote
@@ -46,6 +60,7 @@ function addQuote() {
 
   textInput.value = "";
   categoryInput.value = "";
+
   alert("Quote added successfully!");
 }
 
