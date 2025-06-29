@@ -14,22 +14,27 @@ const categoryFilter = document.getElementById("categoryFilter");
 // ✅ Function: Display a random quote using innerHTML
 function displayRandomQuote() {
   const selectedCategory = categoryFilter.value;
-  const filtered = selectedCategory === "all"
+  const filteredQuotes = selectedCategory === "all"
     ? quotes
     : quotes.filter(q => q.category.toLowerCase() === selectedCategory.toLowerCase());
 
-  if (filtered.length === 0) {
+  if (filteredQuotes.length === 0) {
     quoteDisplay.innerHTML = `<p>No quotes available for this category.</p>`;
     return;
   }
 
-  const randomIndex = Math.floor(Math.random() * filtered.length);
-  const quote = filtered[randomIndex];
+  const randomIndex = Math.floor(Math.random() * filteredQuotes.length);
+  const quote = filteredQuotes[randomIndex];
 
   quoteDisplay.innerHTML = `
     <blockquote>"${quote.text}"</blockquote>
     <cite>— ${quote.category}</cite>
   `;
+}
+
+// ✅ Function: Alias for displayRandomQuote
+function showRandomQuote() {
+  displayRandomQuote();
 }
 
 // ✅ Function: Add a new quote
@@ -69,9 +74,9 @@ function updateCategoryOptions(newCategory) {
 }
 
 // Event listeners
-newQuoteBtn.addEventListener("click", displayRandomQuote);
+newQuoteBtn.addEventListener("click", showRandomQuote);
 addQuoteBtn.addEventListener("click", addQuote);
-categoryFilter.addEventListener("change", displayRandomQuote);
+categoryFilter.addEventListener("change", showRandomQuote);
 
 // Initial render
-displayRandomQuote();
+showRandomQuote();
