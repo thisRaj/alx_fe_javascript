@@ -1,48 +1,38 @@
 // Initial quotes array
-let quotes = [
+const quotes = [
   { text: "The only limit to our realization of tomorrow is our doubts of today.", category: "Motivation" },
   { text: "Life is what happens when you're busy making other plans.", category: "Life" },
   { text: "Creativity is intelligence having fun.", category: "Creativity" }
 ];
 
-// DOM Elements
+// DOM references
 const quoteDisplay = document.getElementById("quoteDisplay");
 const newQuoteBtn = document.getElementById("newQuote");
 const addQuoteBtn = document.getElementById("addQuoteBtn");
 const categoryFilter = document.getElementById("categoryFilter");
 
-// Helper: Clear all children of an element
-function clearElement(el) {
-  while (el.firstChild) {
-    el.removeChild(el.firstChild);
-  }
-}
-
-// Show a random quote
-function showRandomQuote() {
+// ✅ Function: Display a random quote using innerHTML
+function displayRandomQuote() {
   const selectedCategory = categoryFilter.value;
-  const filteredQuotes = selectedCategory === "all"
+  const filtered = selectedCategory === "all"
     ? quotes
     : quotes.filter(q => q.category.toLowerCase() === selectedCategory.toLowerCase());
 
-  clearElement(quoteDisplay);
-
-  if (filteredQuotes.length === 0) {
-    const noQuoteMsg = document.createElement("p");
-    noQuoteMsg.textContent = "No quotes available for this category.";
-    quoteDisplay.appendChild(noQuoteMsg);
+  if (filtered.length === 0) {
+    quoteDisplay.innerHTML = `<p>No quotes available for this category.</p>`;
     return;
   }
 
-  const randomIndex = Math.floor(Math.random() * filteredQuotes.length);
-  const quote = filteredQuotes[randomIndex];
+  const randomIndex = Math.floor(Math.random() * filtered.length);
+  const quote = filtered[randomIndex];
 
-  const quoteText = document.createElement("p");
-  quoteText.textContent = `"${quote.text}" — ${quote.category}`;
-  quoteDisplay.appendChild(quoteText);
+  quoteDisplay.innerHTML = `
+    <blockquote>"${quote.text}"</blockquote>
+    <cite>— ${quote.category}</cite>
+  `;
 }
 
-// Add a new quote
+// ✅ Function: Add a new quote
 function addQuote() {
   const textInput = document.getElementById("newQuoteText");
   const categoryInput = document.getElementById("newQuoteCategory");
@@ -64,10 +54,13 @@ function addQuote() {
   alert("Quote added successfully!");
 }
 
-// Update category dropdown
+// ✅ Function: Update category dropdown
 function updateCategoryOptions(newCategory) {
-  const existingOptions = Array.from(categoryFilter.options).map(opt => opt.value.toLowerCase());
-  if (!existingOptions.includes(newCategory.toLowerCase())) {
+  const exists = Array.from(categoryFilter.options).some(
+    opt => opt.value.toLowerCase() === newCategory.toLowerCase()
+  );
+
+  if (!exists) {
     const option = document.createElement("option");
     option.value = newCategory;
     option.textContent = newCategory;
@@ -75,10 +68,10 @@ function updateCategoryOptions(newCategory) {
   }
 }
 
-// Event Listeners
-newQuoteBtn.addEventListener("click", showRandomQuote);
+// Event listeners
+newQuoteBtn.addEventListener("click", displayRandomQuote);
 addQuoteBtn.addEventListener("click", addQuote);
-categoryFilter.addEventListener("change", showRandomQuote);
+categoryFilter.addEventListener("change", displayRandomQuote);
 
-// Initial quote display
-showRandomQuote();
+// Initial render
+displayRandomQuote();
