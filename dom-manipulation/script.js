@@ -162,6 +162,26 @@ async function syncWithServer() {
         newQuotes.push(serverQuote);
       }
     });
+    const SERVER_URL = "https://jsonplaceholder.typicode.com/posts"; // Simulated server
+
+// ✅ Fetch quotes from server and return them as an array
+async function fetchQuotesFromServer() {
+  try {
+    const response = await fetch(SERVER_URL);
+    const data = await response.json();
+
+    // Simulate server quote format using post titles
+    const serverQuotes = data.slice(0, 5).map(post => ({
+      text: post.title,
+      category: "Server"
+    }));
+
+    return serverQuotes;
+  } catch (error) {
+    console.error("Failed to fetch quotes from server:", error);
+    return [];
+  }
+}
 
     if (newQuotes.length > 0) {
       saveQuotes();
