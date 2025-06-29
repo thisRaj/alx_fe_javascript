@@ -4,6 +4,30 @@ let quotes = [];
 const quoteDisplay = document.getElementById("quoteDisplay");
 const categoryFilter = document.getElementById("categoryFilter");
 
+function createAddQuoteForm() {
+  const formContainer = document.createElement("div");
+  formContainer.id = "addQuoteForm";
+
+  const quoteInput = document.createElement("input");
+  quoteInput.id = "newQuoteText";
+  quoteInput.type = "text";
+  quoteInput.placeholder = "Enter a new quote";
+
+  const categoryInput = document.createElement("input");
+  categoryInput.id = "newQuoteCategory";
+  categoryInput.type = "text";
+  categoryInput.placeholder = "Enter quote category";
+
+  const addButton = document.createElement("button");
+  addButton.textContent = "Add Quote";
+  addButton.addEventListener("click", addQuote);
+
+  formContainer.appendChild(quoteInput);
+  formContainer.appendChild(categoryInput);
+  formContainer.appendChild(addButton);
+
+  document.body.appendChild(formContainer);
+}
 // ✅ Load quotes and filter from localStorage
 function loadQuotes() {
   const storedQuotes = localStorage.getItem("quotes");
@@ -142,7 +166,20 @@ setInterval(syncWithServer, 30000);
   document.getElementById("importFile").addEventListener("change", importFromJsonFile);
   document.getElementById("syncNow").addEventListener("click", syncWithServer);
 }
+function init() {
+  loadQuotes();
+  populateCategories();
+  createAddQuoteForm(); // ✅ Ensure this is called
+  createImportExportControls();
+  filterQuotes();
 
+  document.getElementById("newQuote").addEventListener("click", showRandomQuote);
+  document.getElementById("exportQuotes").addEventListener("click", exportToJsonFile);
+  document.getElementById("importFile").addEventListener("change", importFromJsonFile);
+
+  const syncBtn = document.getElementById("syncQuotesBtn");
+  if (syncBtn) syncBtn.addEventListener("click", syncQuotes);
+}
 init();
 const SERVER_URL = "https://jsonplaceholder.typicode.com/posts"; // Simulated endpoint
 
