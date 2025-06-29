@@ -206,6 +206,36 @@ async function postQuoteToServer(quote) {
     console.error("Failed to post quote to server:", error);
   }
 }
+// ✅ Full sync: fetch from server and post local unsynced quotes
+async function syncQuotes() {
+  // Step 1: Fetch quotes from server
+  const serverQuotes = await fetchQuotesFromServer();
+
+  const localTexts = new Set(quotes.map(q => q.text));
+  const newFromServer = [];
+
+  serverQuotes.forEach(serverQuote => {
+    if (!localTexts.has(serverQuote.text)) {
+      quotes.push(serverQuote);
+      newFromServer.push(serverQuote);
+    }
+  });
+
+  // Step 2: Post all local quotes to server (simulated)
+  for (const quote of quotes) {
+    await postQuoteToServer(quote);
+  }
+
+  // Step 3: Save and update UI
+  if (newFromServer.length > 0) {
+    saveQuotes();
+    populateCategories();
+    filterQuotes();
+    notifyUser(`${newFromServer.length} new quote(s) synced from server.`);
+  } else {
+    notifyUser("Quotes synced successfully. No new server quotes.");
+  }
+}
 
 
     if (newQuotes.length > 0) {
